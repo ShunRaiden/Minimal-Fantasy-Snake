@@ -14,22 +14,30 @@ namespace Character
         public CharacterBaseAnimation animationCharacter;
         public bool isDead = false;
 
-        private void Awake()
+        public void RandomSetUp()
         {
-            statusCharacter.SetUp();
-            uiCharacter?.SetUpUI(statusCharacter.currentHealth, statusCharacter.MAX_HP, statusCharacter.ATK, statusCharacter.DEF);
+            statusCharacter.RandomSetUp();
+            uiCharacter?.SetUpUI(statusCharacter.currentHealth, statusCharacter.currentATK, statusCharacter.currentDEF);
+        }
+
+        public void GetDataSetUp(BaseStatusData data)
+        {
+            statusCharacter.DataSetUp(data);
+            uiCharacter?.SetUpUI(statusCharacter.currentHealth, statusCharacter.currentATK, statusCharacter.currentDEF);
         }
 
         public virtual void TakeDamage(int amount)
         {
-            if (amount > statusCharacter.DEF)
+            if (amount > statusCharacter.currentDEF)
             {
                 statusCharacter.currentHealth -= amount;
 
                 if (statusCharacter.IsDead)
                     Die();
             }
-            uiCharacter?.UpdateHP(statusCharacter.currentHealth, statusCharacter.MAX_HP);
+
+            animationCharacter?.PlayTargetAniamtion(CharacterBaseAnimation.TAKE_DAMAGE_KEY);
+            uiCharacter?.UpdateHP(statusCharacter.currentHealth);
             audioCharacter?.PlaySound(audioCharacter.takeDamageSoundKey);
         }
 
@@ -38,7 +46,7 @@ namespace Character
             RotateToTarget(target.transform.position);
             animationCharacter?.PlayTargetAniamtion(CharacterBaseAnimation.ATTACK_ANIM_KEY);
             audioCharacter?.PlaySound(audioCharacter.attackSoundKey);
-            target.TakeDamage(statusCharacter.ATK);
+            target.TakeDamage(statusCharacter.currentATK);
         }
 
         protected virtual void Die()

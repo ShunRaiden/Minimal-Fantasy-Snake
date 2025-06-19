@@ -29,7 +29,9 @@ namespace Player
         {
             currentPostion = GameManager.instance.gridManager.gridTiles[startPos];
 
-            currentPlayerHero.Add(Instantiate(heroPrefab, currentPostion.transform.position, currentPostion.transform.rotation), currentPostion);
+            var hero = Instantiate(heroPrefab, currentPostion.transform.position, currentPostion.transform.rotation);
+            hero.RandomSetUp();
+            currentPlayerHero.Add(hero, currentPostion);
             playerTile.transform.position = currentPostion.gameObject.transform.position;
         }
 
@@ -119,9 +121,11 @@ namespace Player
             return heroPos;
         }
 
-        public void CollectedHero()
+        public void CollectedHero(BaseStatusData data)
         {
-            currentPlayerHero.Add(Instantiate(heroPrefab, lastTileOfPlayer.transform.position, lastTileOfPlayer.transform.rotation), lastTileOfPlayer);
+            var character = Instantiate(heroPrefab, lastTileOfPlayer.transform.position, lastTileOfPlayer.transform.rotation);
+            currentPlayerHero.Add(character, lastTileOfPlayer);
+            character.GetDataSetUp(data);
         }
 
         public void DeletePlayerHeroHasDead()
@@ -136,9 +140,9 @@ namespace Player
             return currentPlayerHero.Keys.First();
         }
 
-        public bool CheckHeroRemaining()
+        public int CheckHeroRemaining()
         {
-            return currentPlayerHero.Count > 0;
+            return currentPlayerHero.Count;
         }
     }
 }

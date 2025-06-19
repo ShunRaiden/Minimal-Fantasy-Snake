@@ -26,6 +26,11 @@ namespace Manager
                 InitializeUI();
             }
         }
+
+        private void OnDestroy()
+        {
+            DisposeUI();
+        }
         #endregion
 
         public event Action OnStartGameEvent;
@@ -34,8 +39,10 @@ namespace Manager
         [Header("UI")]
         public UIMainMenuPanel uiMainMenuPanel;
         public UIGameOverPanel uiGameOverPanel;
+        public UIGameplaysPanel uiGamePlaysPanel;
 
         public GameStateManager GameState;
+        public GameplayUIManager gameplayUIManager;
         public GridManager gridManager;
         public PlayerManager playerManager;
         public NavMeshSurface navMeshSurface;
@@ -45,6 +52,7 @@ namespace Manager
         public int startSpawnCount = 2;
 
         [Header("Combat Data")]
+        public int turnPerCombatLitmit = 20;
         public CharacterManager currentMonster;
         public CharacterManager currentHero;
         public Tile tileHeroToMoveInto;
@@ -103,6 +111,7 @@ namespace Manager
             }
 
             playerManager.ResetPlayer();
+            gameplayUIManager.ClearGameplaySlot();
         }
         #endregion
 
@@ -141,6 +150,8 @@ namespace Manager
             // Spawn
             CharacterManager newChar = Instantiate(characterPrefab[UnityEngine.Random.Range(0, characterPrefab.Count)],
                                                    spawnGrid.position, Quaternion.identity);
+
+            newChar.RandomSetUp();
 
             currentCharacterOnGrid.Add(tile, newChar);
         }
@@ -216,9 +227,12 @@ namespace Manager
         #region UI
         public void InitializeUI()
         {
+            uiGamePlaysPanel.UpdateGameSpeedText();
+
             uiMainMenuPanel.OnStartButtonClickEvent += OnStartGame;
             uiGameOverPanel.OnRestartButtonClickEvent += OnStartGame;
             uiGameOverPanel.OnMianMenuButtonClickEvent += SetUpMainMenu;
+            uiGamePlaysPanel.OnGameSpeedButtonClickEvent += SetUpGameSpeed;
         }
 
         public void DisposeUI()
@@ -226,11 +240,23 @@ namespace Manager
             uiMainMenuPanel.OnStartButtonClickEvent -= OnStartGame;
             uiGameOverPanel.OnRestartButtonClickEvent -= OnStartGame;
             uiGameOverPanel.OnMianMenuButtonClickEvent -= SetUpMainMenu;
+            uiGamePlaysPanel.OnGameSpeedButtonClickEvent -= SetUpGameSpeed;
         }
 
         public void OnGameOver()
         {
             OnGameOverEvent?.Invoke();
+        }
+
+        public void SetUpGameSpeed(int speed)
+        {
+            Time.timeScale = speed;
+            uiGamePlaysPanel.UpdateGameSpeedText();
+        }
+
+        public int TryGetGameSpeedInt()
+        {
+            return (int)Time.timeScale;
         }
         #endregion
     }

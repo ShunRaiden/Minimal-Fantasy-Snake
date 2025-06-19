@@ -7,14 +7,14 @@ public class CharacterBaseUI : MonoBehaviour
     public TMP_Text atkText;
     public TMP_Text defText;
 
-    public void UpdateHP(int currentHP, int maxHP)
+    public void UpdateHP(int currentHP)
     {
-        hpText.text = $"{currentHP} / {maxHP}";
+        hpText.text = $"{currentHP}";
     }
 
-    public void SetUpUI(int currentHP, int maxHP, int akt, int def)
+    public void SetUpUI(int currentHP, int akt, int def)
     {
-        hpText.text = $"{currentHP} / {maxHP}";
+        hpText.text = $"{currentHP}";
         atkText.text = $"{akt}";
         defText.text = $"{def}";
     }

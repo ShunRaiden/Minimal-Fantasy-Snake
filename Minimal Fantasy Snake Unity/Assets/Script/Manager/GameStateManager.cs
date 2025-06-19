@@ -30,12 +30,16 @@ namespace Manager
     {
         public IEnumerator Execute()
         {
+            Debug.Log($"Start State || SetUpState");
+
             var gm = GameManager.instance;
 
             yield return new WaitUntil(() => gm.gridManager.GenerateGrid());
 
             gm.navMeshSurface.BuildNavMesh();
             gm.playerManager.SetUpPlayer();
+            gm.gameplayUIManager.SetUpPlayerGameplayUI(gm.playerManager.TryGetFirstHero().statusCharacter);
+            gm.gameplayUIManager.UpdatePlayerCount();
 
             for (int i = 0; i < gm.startSpawnCount; i++)
             {
@@ -50,6 +54,8 @@ namespace Manager
     {
         public IEnumerator Execute()
         {
+            Debug.Log($"Start State || InputState");
+
             var gm = GameManager.instance;
             gm.playerManager.canInput = true;
 
@@ -63,6 +69,8 @@ namespace Manager
     {
         public IEnumerator Execute()
         {
+            Debug.Log($"Start State || WalkState");
+
             var gm = GameManager.instance;
             var charInGrid = gm.CheckHasCharacter();
 
@@ -73,13 +81,15 @@ namespace Manager
                     case CharacterType.Hero:
                         gm.DeleteCharacterOnGrid();
                         yield return gm.playerManager.MoveAllHeroNormal();
-                        gm.playerManager.CollectedHero();
+                        gm.playerManager.CollectedHero(charInGrid.statusCharacter.GetDataSetup());
                         gm.SpawnCharacter();
+                        gm.gameplayUIManager.UpdatePlayerCount();
                         gm.SetState(gm.GameState.inputState);
                         break;
                     case CharacterType.Monster:
                         gm.currentMonster = charInGrid;
                         gm.SetState(gm.GameState.combatState);
+                        gm.gameplayUIManager.SetUpMonsterGameplayUI(gm.currentMonster.statusCharacter);
                         break;
                 }
             }
@@ -103,13 +113,18 @@ namespace Manager
     {
         public IEnumerator Execute()
         {
+            Debug.Log($"Start State || CombatState");
+
             var gm = GameManager.instance;
 
             gm.currentHero = gm.playerManager.TryGetFirstHero();
 
+            int turnCount = 0;
+
             while (!gm.currentHero.isDead && !gm.currentMonster.isDead)
             {
                 gm.currentHero.Attack(gm.currentMonster);
+                gm.gameplayUIManager.UpdateMonsterSlot(gm.currentMonster.statusCharacter);
 
                 yield return new WaitForSeconds(gm.currentHero.animationCharacter.attackTiming);
 
@@ -117,21 +132,43 @@ namespace Manager
                 {
                     gm.DeleteCharacterOnGrid();
                     yield return gm.playerManager.MoveAllHeroNormal();
+                    gm.gameplayUIManager.RemoveMonsterProfile();
                     gm.SpawnCharacter();
                     gm.SetState(gm.GameState.inputState);
                     break;
                 }
 
                 gm.currentMonster.Attack(gm.currentHero);
+                gm.gameplayUIManager.UpdatePlayerSlot(gm.currentHero.statusCharacter);
 
                 yield return new WaitForSeconds(gm.currentMonster.animationCharacter.attackTiming);
 
                 if (gm.currentHero.isDead)
                 {
                     gm.tileHeroToMoveInto = gm.playerManager.currentPlayerHero[(HeroManager)gm.currentHero];
+                    gm.gameplayUIManager.RemovePlayerProfile();
                     gm.playerManager.DeletePlayerHeroHasDead();
+                    gm.gameplayUIManager.UpdatePlayerCount();
                     gm.SetState(gm.GameState.postCombatState);
                     break;
+                }
+
+                turnCount++;
+
+                if (turnCount >= gm.turnPerCombatLitmit)
+                {
+                    gm.currentHero.TakeDamage(999);
+                    gm.gameplayUIManager.UpdateMonsterSlot(gm.currentMonster.statusCharacter);
+
+                    gm.currentMonster.TakeDamage(999);
+                    gm.gameplayUIManager.UpdatePlayerSlot(gm.currentHero.statusCharacter);
+                    gm.tileHeroToMoveInto = gm.playerManager.currentPlayerHero[(HeroManager)gm.currentHero];
+
+                    gm.gameplayUIManager.RemovePlayerProfile();
+                    gm.playerManager.DeletePlayerHeroHasDead();
+                    gm.gameplayUIManager.UpdatePlayerCount();
+
+                    gm.SetState(gm.GameState.postCombatState);
                 }
             }
 
@@ -143,12 +180,28 @@ namespace Manager
     {
         public IEnumerator Execute()
         {
+            Debug.Log($"Start State || PostCombatState");
+
             var gm = GameManager.instance;
 
-            if (gm.playerManager.CheckHeroRemaining())
+
+            if (gm.playerManager.CheckHeroRemaining() > 0)
             {
-                yield return gm.playerManager.MoveAllHeroWithTile(gm.tileHeroToMoveInto);
-                gm.SetState(gm.GameState.combatState);
+                if (gm.currentMonster.isDead) // If Draw
+                {
+                    gm.DeleteCharacterOnGrid();
+                    yield return gm.playerManager.MoveAllHeroNormal();
+                    gm.gameplayUIManager.RemoveMonsterProfile();
+                    gm.SpawnCharacter();
+                    gm.SetState(gm.GameState.inputState);
+                    gm.gameplayUIManager.SetUpPlayerGameplayUI(gm.playerManager.TryGetFirstHero().statusCharacter);
+                }
+                else
+                {
+                    gm.gameplayUIManager.SetUpPlayerGameplayUI(gm.playerManager.TryGetFirstHero().statusCharacter);
+                    yield return gm.playerManager.MoveAllHeroWithTile(gm.tileHeroToMoveInto);
+                    gm.SetState(gm.GameState.combatState);
+                }
             }
             else
             {
@@ -164,6 +217,8 @@ namespace Manager
     {
         public IEnumerator Execute()
         {
+            Debug.Log($"Start State || GameOverState");
+
             var gm = GameManager.instance;
             gm.OnGameOver();
             yield return null;
