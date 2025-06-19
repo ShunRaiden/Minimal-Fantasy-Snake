@@ -4039,7 +4039,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3524713412818146791, guid: 6340e2972c4d67e4582f390c8c006e7b, type: 3}
       propertyPath: m_Name
-      value: Hero
+      value: Monster
       objectReference: {fileID: 0}
     - target: {fileID: 3524713412818146791, guid: 6340e2972c4d67e4582f390c8c006e7b, type: 3}
       propertyPath: m_IsActive
@@ -4676,7 +4676,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7393707916569508363, guid: dbb5785a24286f1449e879a772155e69, type: 3}
       propertyPath: m_Name
-      value: Monster
+      value: Hero
       objectReference: {fileID: 0}
     - target: {fileID: 7393707916569508363, guid: dbb5785a24286f1449e879a772155e69, type: 3}
       propertyPath: m_IsActive
