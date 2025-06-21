@@ -9,24 +9,27 @@ namespace Player
 {
     public class PlayerManager : MonoBehaviour
     {
+        [Header("Paramiter")]
         public HeroManager heroPrefab;
 
         public PlayerInputManager inputManager;
 
         public Vector2 startPos = new Vector2(0, 0);
 
+        public GameObject playerTile;
+
+        public string collectHeroSoundKey = "CollectHero";
+        public string moveSoundKey = "Move";
+
+        [Header("Debug")]
         public Tile currentPostion;
         public Tile lastTileOfPlayer;
+
         public Vector2 currentDirection = Vector2.up;
 
         public Dictionary<HeroManager, Tile> currentPlayerHero = new Dictionary<HeroManager, Tile>();
 
-        public GameObject playerTile;
-
         public bool canInput = false;
-
-        public string collectHeroSoundKey = "CollectHero";
-        public string moveSoundKey = "Move";
 
         public void SetUpPlayer()
         {

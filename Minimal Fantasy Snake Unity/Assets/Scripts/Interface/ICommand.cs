@@ -1,7 +1,6 @@
-using System;
 using System.Collections;
 
-public interface IGameState
+public interface ICommand
 {
     IEnumerator Execute();
 }

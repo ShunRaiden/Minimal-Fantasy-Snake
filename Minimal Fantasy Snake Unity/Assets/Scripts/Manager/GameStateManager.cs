@@ -26,7 +26,7 @@ namespace Manager
         }
     }
 
-    public class SetUpState : IGameState
+    public class SetUpState : ICommand
     {
         public IEnumerator Execute()
         {
@@ -41,7 +41,7 @@ namespace Manager
         }
     }
 
-    public class InputState : IGameState
+    public class InputState : ICommand
     {
         public IEnumerator Execute()
         {
@@ -56,7 +56,7 @@ namespace Manager
         }
     }
 
-    public class WalkState : IGameState
+    public class WalkState : ICommand
     {
         public IEnumerator Execute()
         {
@@ -99,7 +99,7 @@ namespace Manager
         }
     }
 
-    public class CombatState : IGameState
+    public class CombatState : ICommand
     {
         public IEnumerator Execute()
         {
@@ -134,7 +134,7 @@ namespace Manager
         }
     }
 
-    public class PostCombatState : IGameState
+    public class PostCombatState : ICommand
     {
         public IEnumerator Execute()
         {
@@ -158,7 +158,7 @@ namespace Manager
         }
     }
 
-    public class GameOverState : IGameState
+    public class GameOverState : ICommand
     {
         public IEnumerator Execute()
         {

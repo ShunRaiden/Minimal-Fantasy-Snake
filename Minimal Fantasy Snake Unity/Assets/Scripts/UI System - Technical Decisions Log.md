@@ -1,13 +1,13 @@
-[UI System] | Technical Decisions Log
-1. UI Design Pattern
+# [UI System] | Technical Decisions Log
+## UI Design Pattern
 	Problem: How should a UI be designed?
 	Options: 
 		- UI and Logic together
 		- MVC
-   Decision: Try to follow the MVC as much as possible.
-   Reason: Easy to edit and easy to modify
+    Decision: Try to follow the MVC as much as possible.
+    Reason: Easy to edit and easy to modify
 
-2. UI Rotation Constraint
+## UI Rotation Constraint
 	Problem: How to keep the UI from changing angles
 	Options: 
 		- Write code to adjust the angle by yourself

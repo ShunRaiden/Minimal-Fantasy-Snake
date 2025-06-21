@@ -54,6 +54,8 @@ namespace Manager
 
         [Header("Combat Data")]
         public int turnPerCombatLitmit = 20;
+
+        [Header("Debug")]
         public CharacterManager currentMonster;
         public CharacterManager currentHero;
         public Tile tileHeroToMoveInto;
@@ -89,7 +91,7 @@ namespace Manager
             OnStartGameEvent?.Invoke();
         }
 
-        public void SetState(IGameState newState)
+        public void SetState(ICommand newState)
         {
             if (GameState.currentState != null)
             {

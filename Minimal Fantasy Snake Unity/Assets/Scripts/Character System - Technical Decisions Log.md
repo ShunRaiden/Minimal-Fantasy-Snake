@@ -1,13 +1,13 @@
-[Character System] | Technical Decisions Log
-1. Base Character
+# [Character System] | Technical Decisions Log
+## Base Character
 	Problem: How should the character control the systems?
 	Options: 
 		- Put everything in one script
 		- Separate parts by function
-   Decision: Used Separate parts by function
-   Reason: Easier to implement and debug
+    Decision: Used Separate parts by function
+    Reason: Easier to implement and debug
 
-2. Inherite Hero
+## Inherite Hero
 	Problem: Do Hero have to inherit?
 	Options: 
 		- Yes
@@ -15,7 +15,7 @@
 	Decision: Yes. 
 	Reason: Because future Hero will have to moves and more systems.
 
-3. Inherite Monster
+## Inherite Monster
 	Problem: Do Monster have to inherit?
 	Options: 
 		- Yes
@@ -23,7 +23,7 @@
 	Decision: No. 
 	Reason: Because at this time there are no plans to add any special systems.
 
-4. Character Movement
+## Character Movement
 	Problem: How should characters move on the grid?
 	Options: 
 		- Direct transform position

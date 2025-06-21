@@ -12,10 +12,11 @@ namespace Manager
 
         [SerializeField] UICharacterProfileSlot uiSlotPrefab;
 
+        [SerializeField] TMP_Text playerCountText;
+
+        [Header("Debug")]
         [SerializeField] UICharacterProfileSlot playerSlot;
         [SerializeField] UICharacterProfileSlot monsterSlot;
-
-        [SerializeField] TMP_Text playerCountText;
 
         public void UpdatePlayerCount()
         {

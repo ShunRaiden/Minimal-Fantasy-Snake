@@ -1,13 +1,13 @@
-[Audio System] | Technical Decisions Log
-1. Audio Manager
+# [Audio System] | Technical Decisions Log
+## Audio Manager
 	Problem: How should a sound system be designed?
 	Options: 
 		- Normal class
 		- Singleton
-   Decision: Used Singleton pattern
-   Reason: easy to manages all audio globally.
+    Decision: Used Singleton pattern
+    Reason: easy to manages all audio globally.
 
-2. Asset Loading Method
+## Asset Loading Method
 	Problem: How should Asset  Loading be designed?
 	Options: 
 		- Normal loading
