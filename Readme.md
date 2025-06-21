@@ -6,7 +6,7 @@
 Move - W A S D / D-pad
 ### Rule :
 1. You cannot go opposite direction.
-2. การชน
+2. Collisions:
     1. If you move onto a tile with a Hero, you will gain that Hero.
     2. If you move onto a tile with a Monster, a battle will begin.
     3. If you move onto a tile with your own Hero, you will immediately lose.

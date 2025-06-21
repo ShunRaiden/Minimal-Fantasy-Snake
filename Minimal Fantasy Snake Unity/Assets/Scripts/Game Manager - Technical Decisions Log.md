@@ -1,5 +1,5 @@
-[Game Manager System] | Technical Decisions Log
-1. Game Manager
+# [Game Manager System] | Technical Decisions Log
+## Game Manager
 	Problem: How should a Game Manager be designed?
 	Options: 
 		- Normal class
