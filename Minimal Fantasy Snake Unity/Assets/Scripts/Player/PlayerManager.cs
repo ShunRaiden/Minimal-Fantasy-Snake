@@ -13,6 +13,7 @@ namespace Player
         public HeroManager heroPrefab;
 
         public PlayerInputManager inputManager;
+        public CombatCameraManager combatCameraManager;
 
         public Vector2 startPos = new Vector2(0, 0);
 

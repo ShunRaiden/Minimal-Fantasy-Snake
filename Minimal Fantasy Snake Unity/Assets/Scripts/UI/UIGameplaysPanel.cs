@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI
 {
@@ -11,6 +12,7 @@ namespace UI
         public event Action<int> OnGameSpeedButtonClickEvent;
 
         [SerializeField] TMP_Text currentSpeedText;
+        [SerializeField] Button returnMainMenuButton;
         [SerializeField] List<UIPlayRateSlot> uIPlayRateSlot = new List<UIPlayRateSlot>();
 
         private void Awake()
@@ -21,6 +23,8 @@ namespace UI
                 slot.Init();
                 slot.OnGameSpeedButtonClickEvent += OnSpeedButtonClick;
             }
+
+            returnMainMenuButton.onClick.AddListener(OnReturnToMainMenu);
         }
 
         private void OnDestroy()
@@ -30,16 +34,23 @@ namespace UI
                 slot.Dispose();
                 slot.OnGameSpeedButtonClickEvent -= OnSpeedButtonClick;
             }
+
+            returnMainMenuButton.onClick.RemoveAllListeners();
         }
 
         public void OnSpeedButtonClick(int speed)
-        {           
+        {
             OnGameSpeedButtonClickEvent?.Invoke(speed);
         }
 
         public void UpdateGameSpeedText()
         {
             currentSpeedText.text = $"Current Speed : x{GameManager.instance.TryGetGameSpeedInt()}";
+        }
+
+        public void OnReturnToMainMenu()
+        {
+            GameManager.instance.SetUpMainMenu();
         }
     }
 }

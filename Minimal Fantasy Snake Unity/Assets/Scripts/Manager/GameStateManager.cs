@@ -77,8 +77,8 @@ namespace Manager
                         break;
                     case CharacterType.Monster:
                         gm.currentMonster = charInGrid;
-                        gm.SetState(gm.GameState.combatState);
                         gm.gameplayUIManager.SetUpMonsterGameplayUI(gm.currentMonster.statusCharacter);
+                        gm.SetState(gm.GameState.combatState);                        
                         break;
                 }
             }
@@ -107,7 +107,9 @@ namespace Manager
 
             var gm = GameManager.instance;
 
-            gm.currentHero = gm.playerManager.TryGetFirstHero();
+            yield return gm.playerManager.combatCameraManager.StartCombatCamera();
+
+            gm.currentHero = gm.playerManager.TryGetFirstHero();            
 
             int turnCount = 0;
 
@@ -128,7 +130,7 @@ namespace Manager
                     yield return gm.DrawCondition();
                     break;
                 }
-            }
+            }           
 
             yield return null;
         }

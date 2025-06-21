@@ -42,11 +42,12 @@ namespace Manager
         public UIGameOverPanel uiGameOverPanel;
         public UIGameplaysPanel uiGamePlaysPanel;
 
+        [Header("Manager")]
         public GameStateManager GameState;
         public GameplayUIManager gameplayUIManager;
         public GridManager gridManager;
-        public PlayerManager playerManager;
         public NavMeshSurface navMeshSurface;
+        public PlayerManager playerManager;       
 
         [Header("Spawn")]
         public List<CharacterManager> characterPrefab = new List<CharacterManager>();
@@ -251,6 +252,9 @@ namespace Manager
 
         public void OnGameOver()
         {
+            AudioManager.instance.StopMusic();
+            AudioManager.instance.PlayOneShotSFX(AudioManager.GAME_LOSE);
+
             OnGameOverEvent?.Invoke();
         }
 
@@ -304,6 +308,7 @@ namespace Manager
 
             if (currentMonster.isDead)
             {
+                yield return playerManager.combatCameraManager.StopCombatCamera();
                 DeleteCharacterOnGrid();
                 yield return playerManager.MoveAllHeroNormal();
                 gameplayUIManager.RemoveMonsterProfile();
@@ -322,6 +327,7 @@ namespace Manager
 
             if (currentHero.isDead)
             {
+                yield return playerManager.combatCameraManager.StopCombatCamera();
                 tileHeroToMoveInto = playerManager.currentPlayerHero[(HeroManager)currentHero];
                 gameplayUIManager.RemovePlayerProfile();
                 playerManager.DeletePlayerHeroHasDead();
@@ -345,6 +351,7 @@ namespace Manager
 
             if (playerManager.CheckHeroRemaining() > 0)
             {
+                yield return playerManager.combatCameraManager.StopCombatCamera();
                 DeleteCharacterOnGrid();
                 yield return playerManager.MoveAllHeroNormal();
                 gameplayUIManager.RemoveMonsterProfile();

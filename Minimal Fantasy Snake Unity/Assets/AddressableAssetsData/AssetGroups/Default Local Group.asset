@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d040bfcf287b1b4fa1f188b0c13d553
+    m_Address: Game-Lose
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 91fbffa2806bbb14da3aebebbc45f993
     m_Address: Base-BGM
     m_ReadOnly: 0

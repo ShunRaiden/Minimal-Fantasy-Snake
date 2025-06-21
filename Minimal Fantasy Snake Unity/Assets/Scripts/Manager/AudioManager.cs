@@ -30,6 +30,7 @@ namespace Manager
 
         [Header("Base Audio")]
         public const string BASE_BGM = "Base-BGM";
+        public const string GAME_LOSE = "Game-Lose";
 
         private AsyncOperationHandle<AudioClip> bgmHandle;
 
