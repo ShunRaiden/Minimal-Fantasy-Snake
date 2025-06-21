@@ -25,6 +25,9 @@ namespace Player
 
         public bool canInput = false;
 
+        public string collectHeroSoundKey = "CollectHero";
+        public string moveSoundKey = "Move";
+
         public void SetUpPlayer()
         {
             currentPostion = GameManager.instance.gridManager.gridTiles[startPos];
@@ -98,6 +101,8 @@ namespace Player
                 hero.Key.StartCoroutine(hero.Key.MoveHero(targetGridPos));
             }
 
+            AudioManager.instance.PlayOneShotSFX(moveSoundKey);
+
             foreach (HeroManager hero in newHeroTile.Keys)
             {
                 yield return new WaitUntil(() => !hero.IsMoving);
@@ -126,6 +131,8 @@ namespace Player
             var character = Instantiate(heroPrefab, lastTileOfPlayer.transform.position, lastTileOfPlayer.transform.rotation);
             currentPlayerHero.Add(character, lastTileOfPlayer);
             character.GetDataSetUp(data);
+
+            AudioManager.instance.PlayOneShotSFX(collectHeroSoundKey);
         }
 
         public void DeletePlayerHeroHasDead()

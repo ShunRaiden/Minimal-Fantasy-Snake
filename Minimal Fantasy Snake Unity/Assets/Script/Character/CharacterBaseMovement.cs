@@ -1,3 +1,4 @@
+using Manager;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -31,7 +32,7 @@ namespace Character
         {
             Vector3 position = new Vector3(targetPosition.x, 0, targetPosition.y);
             agent.SetDestination(position);
-            RatationDirection(position);
+            RatationDirection(position);          
         }
         public void RatationDirection(Vector3 targetPosition)
         {

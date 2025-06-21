@@ -47,12 +47,22 @@ namespace Manager
 
         public void UpdatePlayerSlot(CharacterBaseStatus character)
         {
-            playerSlot?.UpdateDataSlot(character);
+            playerSlot?.UpdateHPDataSlot(character);
         }
 
         public void UpdateMonsterSlot(CharacterBaseStatus character)
         {
-            monsterSlot?.UpdateDataSlot(character);
+            monsterSlot?.UpdateHPDataSlot(character);
+        }
+
+        public void PlayPlayerSlotAttackAnimation()
+        {
+            playerSlot?.PlayAnimation("HeroAttack");
+        }
+
+        public void PlayMonsterSlotAttackAnimation()
+        {
+            monsterSlot?.PlayAnimation("MonsterAttack");
         }
 
         public void RemovePlayerProfile()

@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ namespace Character
         public const string DEAD_ANIM_KEY = "Dead";
 
         public float attackTiming;
+        public float delayDamage;
 
         void Awake()
         {
@@ -27,7 +29,13 @@ namespace Character
 
         public void PlayTargetAniamtion(string anim)
         {
-            animator.Play(anim);
+            animator.Play(anim);            
+        }
+
+        public IEnumerator PlayAttackAnimation()
+        {
+            animator.Play(ATTACK_ANIM_KEY);
+            yield return new WaitForSeconds(delayDamage);
         }
     }
 }

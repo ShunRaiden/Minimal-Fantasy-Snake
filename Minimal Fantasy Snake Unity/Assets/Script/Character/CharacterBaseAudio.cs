@@ -1,13 +1,15 @@
+using Manager;
 using UnityEngine;
 
-public class CharacterBaseAudio : MonoBehaviour
+namespace Character
 {
-    public string attackSoundKey;
-    public string deadSoundKey;
-    public string takeDamageSoundKey;
+    [System.Serializable]
+    public class CharacterBaseAudio
+    {       
+        [SerializeField] string takeDamageSoundKey = "TakeDamage";
+        public string TakeDamageSoundKey => takeDamageSoundKey;
 
-    public void PlaySound(string targetSound)
-    {
-        //AudioManager.Instance.PlaySound(attackSoundKey);
+        [SerializeField] string deadSoundKey = "Dead";
+        public string DeadSoundSoundKey => deadSoundKey;
     }
 }

@@ -1,6 +1,7 @@
 using Character;
 using Player;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UI;
 using Unity.AI.Navigation;
@@ -61,6 +62,8 @@ namespace Manager
         #region State SetUp
         public void SetUpMainMenu()
         {
+            AudioManager.instance.StopMusic();
+
             uiMainMenuPanel?.OpenPanel();
             uiGameOverPanel?.ClosePanel();
             ClearCharacter();
@@ -68,6 +71,8 @@ namespace Manager
 
         public void OnStartGame()
         {
+            AudioManager.instance.PlayMusic(AudioManager.BASE_BGM);
+
             if (GameState == null)
             {
                 GameState = new GameStateManager();
@@ -145,11 +150,8 @@ namespace Manager
 
             Tile tile = gridManager.gridTiles[spawnGridPos];
 
-            Transform spawnGrid = tile.transform;
-
-            // Spawn
             CharacterManager newChar = Instantiate(characterPrefab[UnityEngine.Random.Range(0, characterPrefab.Count)],
-                                                   spawnGrid.position, Quaternion.identity);
+                                                   tile.transform.position, Quaternion.identity);
 
             newChar.RandomSetUp();
 
@@ -230,6 +232,7 @@ namespace Manager
             uiGamePlaysPanel.UpdateGameSpeedText();
 
             uiMainMenuPanel.OnStartButtonClickEvent += OnStartGame;
+            uiMainMenuPanel.OnQuitButtonClickEvent += OnQuitGmae;
             uiGameOverPanel.OnRestartButtonClickEvent += OnStartGame;
             uiGameOverPanel.OnMianMenuButtonClickEvent += SetUpMainMenu;
             uiGamePlaysPanel.OnGameSpeedButtonClickEvent += SetUpGameSpeed;
@@ -238,6 +241,7 @@ namespace Manager
         public void DisposeUI()
         {
             uiMainMenuPanel.OnStartButtonClickEvent -= OnStartGame;
+            uiMainMenuPanel.OnQuitButtonClickEvent -= OnQuitGmae;
             uiGameOverPanel.OnRestartButtonClickEvent -= OnStartGame;
             uiGameOverPanel.OnMianMenuButtonClickEvent -= SetUpMainMenu;
             uiGamePlaysPanel.OnGameSpeedButtonClickEvent -= SetUpGameSpeed;
@@ -257,6 +261,100 @@ namespace Manager
         public int TryGetGameSpeedInt()
         {
             return (int)Time.timeScale;
+        }
+
+        public void OnQuitGmae()
+        {
+            Application.Quit();
+        }
+        #endregion
+
+        #region StateMethod
+        public bool SetUpGameState()
+        {
+            navMeshSurface.BuildNavMesh();
+            playerManager.SetUpPlayer();
+            gameplayUIManager.SetUpPlayerGameplayUI(playerManager.TryGetFirstHero().statusCharacter);
+            gameplayUIManager.UpdatePlayerCount();
+
+            for (int i = 0; i < startSpawnCount; i++)
+            {
+                SpawnCharacter();
+            }
+
+            return true;
+        }
+
+        public void CollectHero(CharacterManager charInGrid)
+        {
+            playerManager.CollectedHero(charInGrid.statusCharacter.GetDataSetup());
+            SpawnCharacter();
+            gameplayUIManager.UpdatePlayerCount();
+        }
+
+        public IEnumerator PlayerAttack()
+        {
+            gameplayUIManager.PlayPlayerSlotAttackAnimation();
+            yield return currentHero.Attack(currentMonster);
+            gameplayUIManager.UpdateMonsterSlot(currentMonster.statusCharacter);
+
+            yield return new WaitForSeconds(currentHero.animationCharacter.attackTiming);
+
+            if (currentMonster.isDead)
+            {
+                DeleteCharacterOnGrid();
+                yield return playerManager.MoveAllHeroNormal();
+                gameplayUIManager.RemoveMonsterProfile();
+                SpawnCharacter();
+                SetState(GameState.inputState);
+            }
+        }
+
+        public IEnumerator MonsterAttack()
+        {
+            gameplayUIManager.PlayMonsterSlotAttackAnimation();
+            yield return currentMonster.Attack(currentHero);
+            gameplayUIManager.UpdatePlayerSlot(currentHero.statusCharacter);
+
+            yield return new WaitForSeconds(currentMonster.animationCharacter.attackTiming);
+
+            if (currentHero.isDead)
+            {
+                tileHeroToMoveInto = playerManager.currentPlayerHero[(HeroManager)currentHero];
+                gameplayUIManager.RemovePlayerProfile();
+                playerManager.DeletePlayerHeroHasDead();
+                gameplayUIManager.UpdatePlayerCount();
+                SetState(GameState.postCombatState);
+            }
+        }
+
+        public IEnumerator DrawCondition()
+        {
+            currentHero.TakeDamage(999);
+            gameplayUIManager.UpdateMonsterSlot(currentMonster.statusCharacter);
+
+            currentMonster.TakeDamage(999);
+            gameplayUIManager.UpdatePlayerSlot(currentHero.statusCharacter);
+            tileHeroToMoveInto = playerManager.currentPlayerHero[(HeroManager)currentHero];
+
+            gameplayUIManager.RemovePlayerProfile();
+            playerManager.DeletePlayerHeroHasDead();
+            gameplayUIManager.UpdatePlayerCount();
+
+            if (playerManager.CheckHeroRemaining() > 0)
+            {
+                DeleteCharacterOnGrid();
+                yield return playerManager.MoveAllHeroNormal();
+                gameplayUIManager.RemoveMonsterProfile();
+                SpawnCharacter();
+                gameplayUIManager.SetUpPlayerGameplayUI(playerManager.TryGetFirstHero().statusCharacter);
+                SetState(GameState.inputState);
+            }
+            else
+            {
+                SetState(GameState.gameOverState);
+                Debug.Log("Game Over by : Lose Fight");
+            }
         }
         #endregion
     }

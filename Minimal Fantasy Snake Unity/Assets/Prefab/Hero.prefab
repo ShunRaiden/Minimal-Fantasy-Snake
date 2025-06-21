@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1068038217370251209}
   - component: {fileID: 8953694134815649581}
   - component: {fileID: 8455764348432350479}
-  - component: {fileID: 2828546512581120467}
   - component: {fileID: 1422393381329214659}
   - component: {fileID: 3436353447560225453}
   - component: {fileID: 7020050624750048568}
@@ -53,12 +52,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterType: 0
   uiCharacter: {fileID: 3436353447560225453}
-  audioCharacter: {fileID: 2828546512581120467}
+  audioCharacter:
+    takeDamageSoundKey: TakeDamage
+    deadSoundKey: Dead
   statusCharacter:
     iconSprite: {fileID: 21300000, guid: 3f68b1e297e7f524fbaba16809ef8521, type: 3}
     MAX_HP: 100
-    ATK: 10
-    DEF: 5
+    MIN_HP: 50
+    MAX_ATK: 10
+    MIN_ATK: 5
+    MAX_DEF: 4
+    MIN_DEF: 1
+    currentDEF: 0
+    currentATK: 0
     currentHealth: 0
   movementCharacter: {fileID: 1422393381329214659}
   animationCharacter: {fileID: 8455764348432350479}
@@ -76,22 +82,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b38b04263b551604a89868d68881d6e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackTiming: 1
---- !u!114 &2828546512581120467
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7393707916569508363}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d69f109a8ea91041abb463d2da46620, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackSoundKey: 
-  deadSoundKey: 
-  takeDamageSoundKey: 
+  attackTiming: 0.9
+  delayDamage: 0.6
 --- !u!114 &1422393381329214659
 MonoBehaviour:
   m_ObjectHideFlags: 0

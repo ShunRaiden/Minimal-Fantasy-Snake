@@ -1,3 +1,5 @@
+using Manager;
+using System.Collections;
 using UnityEngine;
 
 namespace Character
@@ -38,21 +40,20 @@ namespace Character
 
             animationCharacter?.PlayTargetAniamtion(CharacterBaseAnimation.TAKE_DAMAGE_KEY);
             uiCharacter?.UpdateHP(statusCharacter.currentHealth);
-            audioCharacter?.PlaySound(audioCharacter.takeDamageSoundKey);
+            AudioManager.instance.PlayOneShotSFX(audioCharacter.TakeDamageSoundKey);
         }
 
-        public virtual void Attack(CharacterManager target)
+        public virtual IEnumerator Attack(CharacterManager target)
         {
             RotateToTarget(target.transform.position);
-            animationCharacter?.PlayTargetAniamtion(CharacterBaseAnimation.ATTACK_ANIM_KEY);
-            audioCharacter?.PlaySound(audioCharacter.attackSoundKey);
+            yield return StartCoroutine(animationCharacter?.PlayAttackAnimation());
             target.TakeDamage(statusCharacter.currentATK);
         }
 
         protected virtual void Die()
         {
             animationCharacter?.SetTriggerAnimation(CharacterBaseAnimation.DEAD_ANIM_KEY);
-            audioCharacter?.PlaySound(audioCharacter.deadSoundKey);
+            AudioManager.instance.PlayOneShotSFX(audioCharacter.DeadSoundSoundKey);
             isDead = true;
         }
 

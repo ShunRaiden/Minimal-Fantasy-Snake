@@ -18,7 +18,7 @@ namespace UI
         private void Awake()
         {
             startButton.onClick.AddListener(OnStartButtonClick);
-            quitButton.onClick.AddListener(OnStartButtonClick);
+            quitButton.onClick.AddListener(OnQuitButtonClick);
 
             GameManager.instance.OnStartGameEvent += ClosePanel;
         }

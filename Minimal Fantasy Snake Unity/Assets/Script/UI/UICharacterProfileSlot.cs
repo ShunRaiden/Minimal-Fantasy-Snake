@@ -22,21 +22,26 @@ namespace UI
 
         public void SetUpSlot(CharacterBaseStatus data)
         {
-            UpdateDataSlot(data);
-        }
-
-        public void UpdateDataSlot(CharacterBaseStatus data)
-        {
             hp_Text.text = data.currentHealth.ToString();
             atk_Text.text = data.currentATK.ToString();
             def_Text.text = data.currentDEF.ToString();
             profileImage.sprite = data.IconSprite;
         }
 
+        public void UpdateHPDataSlot(CharacterBaseStatus data)
+        {
+            hp_Text.text = data.currentHealth.ToString();
+        }
+
         public void RemoveSlot()
         {
-            animator.Play("Remove");
+            PlayAnimation("Remove");
             Destroy(gameObject, 2f);
+        }
+
+        public void PlayAnimation(string anim)
+        {
+            animator.Play(anim);
         }
     }
 }
