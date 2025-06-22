@@ -1,6 +1,7 @@
 # Readme
 ## Minimal Fantasy Snake
 ### [Game Build - Google Drive](https://drive.google.com/file/d/1BERDsmg29GmoZQTJNztMiTkgfDX2dSCK/view?usp=sharing)
+#### Game Engine - Unity LTS version 6000.0.51f1
 ## How to play?
 ### Controller :
     Move - W A S D / D-pad
