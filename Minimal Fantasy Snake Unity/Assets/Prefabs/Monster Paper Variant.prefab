@@ -696,6 +696,10 @@ PrefabInstance:
       propertyPath: statusCharacter.iconClass
       value: 
       objectReference: {fileID: 21300000, guid: 0a61791ace3e4184398e5122404d67d5, type: 3}
+    - target: {fileID: 8645284581354344550, guid: 6340e2972c4d67e4582f390c8c006e7b, type: 3}
+      propertyPath: statusCharacter.iconSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 203eb5edb0b237245b450328e441b3df, type: 3}
     - target: {fileID: 8675037301900893626, guid: 6340e2972c4d67e4582f390c8c006e7b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 7.483715

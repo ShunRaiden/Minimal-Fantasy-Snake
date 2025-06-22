@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UI;
 using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Manager
 {
@@ -66,11 +67,7 @@ namespace Manager
         #region State SetUp
         public void SetUpMainMenu()
         {
-            AudioManager.instance.StopMusic();
-
-            uiMainMenuPanel?.OpenPanel();
-            uiGameOverPanel?.ClosePanel();
-            ClearCharacter();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
         public void OnStartGame()

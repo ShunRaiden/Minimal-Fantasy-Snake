@@ -76,6 +76,10 @@ PrefabInstance:
       propertyPath: statusCharacter.iconClass
       value: 
       objectReference: {fileID: 21300000, guid: 01e469be70319e74b95e3d87b1977b5f, type: 3}
+    - target: {fileID: 8953694134815649581, guid: dbb5785a24286f1449e879a772155e69, type: 3}
+      propertyPath: statusCharacter.iconSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 43c0f1db4b6f5894892a0530767372ad, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

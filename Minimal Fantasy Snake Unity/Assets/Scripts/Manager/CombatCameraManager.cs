@@ -11,7 +11,7 @@ namespace Manager
         [SerializeField] GameObject leftCamera;
         [SerializeField] GameObject rightCamera;
 
-        GameObject currentCamera;
+        private GameObject currentCamera;
 
         [SerializeField] Animator fadeAnim;
 
