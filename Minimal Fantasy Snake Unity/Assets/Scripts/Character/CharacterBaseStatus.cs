@@ -6,8 +6,11 @@ namespace Character
     [System.Serializable]
     public class CharacterBaseStatus
     {
-        public Sprite iconSprite;
+        [SerializeField] Sprite iconSprite;
         public Sprite IconSprite => iconSprite;
+
+        [SerializeField] Sprite iconClass;
+        public Sprite IconClass => iconClass;
 
         [SerializeField] int MAX_HP = 100;
         [SerializeField] int MIN_HP = 50;

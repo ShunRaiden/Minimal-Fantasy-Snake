@@ -14,6 +14,7 @@ namespace UI
         [SerializeField] TMP_Text def_Text;
 
         [SerializeField] Image profileImage;
+        [SerializeField] Image classImage;
 
         private void Awake()
         {
@@ -26,6 +27,7 @@ namespace UI
             atk_Text.text = data.currentATK.ToString();
             def_Text.text = data.currentDEF.ToString();
             profileImage.sprite = data.IconSprite;
+            classImage.sprite = data.IconClass;
         }
 
         public void UpdateHPDataSlot(CharacterBaseStatus data)

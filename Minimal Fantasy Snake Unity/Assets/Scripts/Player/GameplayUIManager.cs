@@ -7,10 +7,14 @@ namespace Manager
 {
     public class GameplayUIManager : MonoBehaviour
     {
+        [Header("CharacterProfile")]
         [SerializeField] Transform playerLayout;
         [SerializeField] Transform monsterLayout;
-
         [SerializeField] UICharacterProfileSlot uiSlotPrefab;
+
+        [Header("CharacterProfile")]
+        [SerializeField] Transform damageNumberLayout;
+        [SerializeField] UIDamageNumberSlot uiDamageNumberPerfab;
 
         [SerializeField] TMP_Text playerCountText;
 
@@ -85,6 +89,12 @@ namespace Manager
 
             monsterSlot?.RemoveSlot();
             monsterSlot = null;
+        }
+
+        public void SpawnDamageNumber(int amount)
+        {
+            var dm = Instantiate(uiDamageNumberPerfab, damageNumberLayout);
+            dm.SpawnDamageNumber(amount.ToString());
         }
 
         private UICharacterProfileSlot SetUpCharacterGameplaysUI(Transform layout)

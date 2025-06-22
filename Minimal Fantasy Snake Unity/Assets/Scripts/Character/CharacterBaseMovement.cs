@@ -34,6 +34,7 @@ namespace Character
             agent.SetDestination(position);
             RatationDirection(position);          
         }
+
         public void RatationDirection(Vector3 targetPosition)
         {
             Vector3 direction = (targetPosition - transform.position).normalized;

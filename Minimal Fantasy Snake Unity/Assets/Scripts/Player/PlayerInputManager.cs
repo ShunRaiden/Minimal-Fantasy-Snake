@@ -18,7 +18,9 @@ namespace Player
                 playerInput = new PlayerInput();
             }
 
-            playerInput.PlayerMovement.Movement.started += OnMovementStarted;
+            playerInput.PlayerAllInput.Movement.started += OnMovementStarted;
+            playerInput.PlayerAllInput.HeroSwapForward.started += i => OnHeroSwapForward();
+            playerInput.PlayerAllInput.HeroSwapBackward.started += i => OnHeroSwapBackward();
 
             playerInput.Enable();
         }
@@ -27,7 +29,9 @@ namespace Player
         {
             if (playerInput != null)
             {
-                playerInput.PlayerMovement.Movement.started -= OnMovementStarted;
+                playerInput.PlayerAllInput.Movement.started -= OnMovementStarted;
+                playerInput.PlayerAllInput.HeroSwapForward.started -= i => OnHeroSwapForward();
+                playerInput.PlayerAllInput.HeroSwapBackward.started -= i => OnHeroSwapBackward();
 
                 playerInput.Disable();
             }
@@ -60,7 +64,7 @@ namespace Player
                 return false;
             }
 
-            Vector2 targetPos = playerManager.currentPostion.GridPosition + dir;
+            Vector2 targetPos = playerManager.currentPostion.gridPosition + dir;
 
             // Check is still in Grid
             if (!GameManager.instance.gridManager.IsPositionInGrid(targetPos))
@@ -69,6 +73,16 @@ namespace Player
             }
 
             return true;
+        }
+
+        private void OnHeroSwapForward()
+        {
+            playerManager.SwapHeroForward();
+        }
+
+        private void OnHeroSwapBackward()
+        {
+            playerManager.SwapHeroBackward();
         }
     }
 }

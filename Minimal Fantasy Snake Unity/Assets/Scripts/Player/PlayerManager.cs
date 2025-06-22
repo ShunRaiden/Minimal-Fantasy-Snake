@@ -10,7 +10,9 @@ namespace Player
     public class PlayerManager : MonoBehaviour
     {
         [Header("Paramiter")]
-        public HeroManager heroPrefab;
+        public HeroManager scissorPrefab;
+        public HeroManager paperPrefab;
+        public HeroManager rockPrefab;
 
         public PlayerInputManager inputManager;
         public CombatCameraManager combatCameraManager;
@@ -36,7 +38,10 @@ namespace Player
         {
             currentPostion = GameManager.instance.gridManager.gridTiles[startPos];
 
-            var hero = Instantiate(heroPrefab, currentPostion.transform.position, currentPostion.transform.rotation);
+            var hero = Instantiate(GameManager.instance.heroPerfab[Random.Range(0, GameManager.instance.heroPerfab.Count)],
+                                   currentPostion.transform.position,
+                                   currentPostion.transform.rotation);
+
             hero.RandomSetUp();
             currentPlayerHero.Add(hero, currentPostion);
             playerTile.transform.position = currentPostion.gameObject.transform.position;
@@ -61,14 +66,14 @@ namespace Player
 
         public void MovePlayer(Vector2 input)
         {
-            Vector2 newPos = currentPostion.GridPosition + input;
+            Vector2 newPos = currentPostion.gridPosition + input;
             currentPostion = GameManager.instance.gridManager.gridTiles[newPos];
             playerTile.transform.position = currentPostion.gameObject.transform.position;
         }
 
         public IEnumerator MoveAllHeroNormal()
         {
-            Vector2 nextGridPos = currentPostion.GridPosition;
+            Vector2 nextGridPos = currentPostion.gridPosition;
             Tile nextTile = GameManager.instance.gridManager.GetTileAtGridPosition(nextGridPos);
             yield return MoveAllHero(nextTile);
         }
@@ -100,7 +105,7 @@ namespace Player
             {
                 currentPlayerHero[hero.Key] = hero.Value;
 
-                Vector2 targetGridPos = hero.Value.GridPosition;
+                Vector2 targetGridPos = hero.Value.gridPosition;
 
                 hero.Key.StartCoroutine(hero.Key.MoveHero(targetGridPos));
             }
@@ -119,7 +124,7 @@ namespace Player
 
             foreach (var hero in currentPlayerHero)
             {
-                Vector2 pos = hero.Value.GridPosition;
+                Vector2 pos = hero.Value.gridPosition;
 
                 if (!heroPos.ContainsKey(pos))
                 {
@@ -130,13 +135,28 @@ namespace Player
             return heroPos;
         }
 
-        public void CollectedHero(BaseStatusData data)
+        public void CollectedHero(CharacterManager data)
         {
-            var character = Instantiate(heroPrefab, lastTileOfPlayer.transform.position, lastTileOfPlayer.transform.rotation);
+            var character = Instantiate(GetHeroPrefab(data.characterClass), lastTileOfPlayer.transform.position, lastTileOfPlayer.transform.rotation);
             currentPlayerHero.Add(character, lastTileOfPlayer);
-            character.GetDataSetUp(data);
+            character.GetDataSetUp(data.statusCharacter.GetDataSetup());
 
             AudioManager.instance.PlayOneShotSFX(collectHeroSoundKey);
+        }
+
+        private HeroManager GetHeroPrefab(CharacterClass classed)
+        {
+            switch (classed)
+            {
+                case CharacterClass.Paper:
+                    return paperPrefab;
+                case CharacterClass.Rock:
+                    return rockPrefab;
+                case CharacterClass.Scissor:
+                    return scissorPrefab;
+            }
+
+            return null;
         }
 
         public void DeletePlayerHeroHasDead()
@@ -154,6 +174,59 @@ namespace Player
         public int CheckHeroRemaining()
         {
             return currentPlayerHero.Count;
+        }
+
+        public void SwapHeroForward()
+        {
+            SwapHero(true);
+        }
+
+        public void SwapHeroBackward()
+        {
+            SwapHero(false);
+        }
+
+        private void SwapHero(bool isForward)
+        {
+            if (currentPlayerHero.Count <= 1 || !canInput) return;
+
+            var heroList = currentPlayerHero.Keys.ToList();
+            var tileList = currentPlayerHero.Values.ToList();
+
+            if (isForward)
+            {
+                var firstHero = heroList[0];
+                heroList.RemoveAt(0);
+                heroList.Add(firstHero);
+            }
+            else
+            {
+                var lastHero = heroList[heroList.Count - 1];
+                heroList.RemoveAt(heroList.Count - 1);
+                heroList.Insert(0, lastHero);
+            }
+
+            var newDict = new Dictionary<HeroManager, Tile>();
+
+            for (int i = 0; i < heroList.Count; i++)
+            {
+                var data = heroList[i].statusCharacter.GetDataSetup();
+                heroList[i] = Instantiate(GetHeroPrefab(heroList[i].characterClass), tileList[i].transform.position, tileList[i].transform.rotation);
+                heroList[i].GetDataSetUp(data);
+                heroList[i].GetDataDirection(currentDirection);
+                newDict[heroList[i]] = tileList[i];
+            }
+
+            foreach (var hero in currentPlayerHero.Keys)
+            {
+                Destroy(hero.gameObject);
+            }
+
+            currentPlayerHero.Clear();
+            currentPlayerHero = newDict;
+
+            GameManager.instance.gameplayUIManager.RemovePlayerProfile();
+            GameManager.instance.gameplayUIManager.SetUpPlayerGameplayUI(TryGetFirstHero().statusCharacter);
         }
     }
 }

@@ -47,9 +47,10 @@ namespace Manager
         public GameplayUIManager gameplayUIManager;
         public GridManager gridManager;
         public NavMeshSurface navMeshSurface;
-        public PlayerManager playerManager;       
+        public PlayerManager playerManager;
 
         [Header("Spawn")]
+        public List<HeroManager> heroPerfab = new List<HeroManager>();
         public List<CharacterManager> characterPrefab = new List<CharacterManager>();
         public int startSpawnCount = 2;
 
@@ -172,7 +173,7 @@ namespace Manager
 
             foreach (var monster in currentCharacterOnGrid)
             {
-                allCharacterPos[monster.Key.GridPosition] = monster.Value;
+                allCharacterPos[monster.Key.gridPosition] = monster.Value;
             }
 
             return allCharacterPos;
@@ -212,7 +213,7 @@ namespace Manager
                     continue;
                 }
 
-                if (tile.GridPosition == playerManager.currentPostion.GridPosition)
+                if (tile.gridPosition == playerManager.currentPostion.gridPosition)
                 {
                     return true;
                 }
@@ -293,7 +294,7 @@ namespace Manager
 
         public void CollectHero(CharacterManager charInGrid)
         {
-            playerManager.CollectedHero(charInGrid.statusCharacter.GetDataSetup());
+            playerManager.CollectedHero(charInGrid);
             SpawnCharacter();
             gameplayUIManager.UpdatePlayerCount();
         }
@@ -338,10 +339,10 @@ namespace Manager
 
         public IEnumerator DrawCondition()
         {
-            currentHero.TakeDamage(999);
+            currentHero.TakeDamage(999, CharacterClass.God);
             gameplayUIManager.UpdateMonsterSlot(currentMonster.statusCharacter);
 
-            currentMonster.TakeDamage(999);
+            currentMonster.TakeDamage(999, CharacterClass.God);
             gameplayUIManager.UpdatePlayerSlot(currentHero.statusCharacter);
             tileHeroToMoveInto = playerManager.currentPlayerHero[(HeroManager)currentHero];
 
