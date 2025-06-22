@@ -64,6 +64,7 @@ namespace Manager
 
             var gm = GameManager.instance;
             var charInGrid = gm.CheckHasCharacter();
+            var itemInGrid = gm.CheckHasBuffItem();
 
             if (charInGrid != null)
             {
@@ -78,9 +79,20 @@ namespace Manager
                     case CharacterType.Monster:
                         gm.currentMonster = charInGrid;
                         gm.gameplayUIManager.SetUpMonsterGameplayUI(gm.currentMonster.statusCharacter);
-                        gm.SetState(gm.GameState.combatState);                        
+                        gm.SetState(gm.GameState.combatState);
                         break;
                 }
+            }
+            else if (itemInGrid != null)
+            {
+                gm.currentHero = gm.playerManager.TryGetFirstHero();
+
+                itemInGrid.GetBuff(gm.currentHero);
+                gm.gameplayUIManager.UpdatePlayerSlot(gm.currentHero.statusCharacter);
+
+                yield return gm.playerManager.MoveAllHeroNormal();
+
+                gm.SetState(gm.GameState.inputState);
             }
             else
             {
@@ -109,7 +121,7 @@ namespace Manager
 
             yield return gm.playerManager.combatCameraManager.StartCombatCamera();
 
-            gm.currentHero = gm.playerManager.TryGetFirstHero();            
+            gm.currentHero = gm.playerManager.TryGetFirstHero();
 
             int turnCount = 0;
 
@@ -125,12 +137,12 @@ namespace Manager
 
                 turnCount++;
 
-                if (turnCount >= gm.turnPerCombatLitmit)
+                if (turnCount >= gm.turnPerCombatLitmit && gm.CheckDrawCondition(gm.currentHero.statusCharacter, gm.currentMonster.statusCharacter))
                 {
-                    yield return gm.DrawCondition();
+                    yield return gm.StartDrawCondition();
                     break;
                 }
-            }           
+            }
 
             yield return null;
         }

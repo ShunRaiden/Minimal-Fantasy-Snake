@@ -52,12 +52,12 @@ namespace Manager
 
         public void UpdatePlayerSlot(CharacterBaseStatus character)
         {
-            playerSlot?.UpdateHPDataSlot(character);
+            playerSlot?.UpdateDataSlot(character);
         }
 
         public void UpdateMonsterSlot(CharacterBaseStatus character)
         {
-            monsterSlot?.UpdateHPDataSlot(character);
+            monsterSlot?.UpdateDataSlot(character);
         }
 
         public void PlayPlayerSlotAttackAnimation()

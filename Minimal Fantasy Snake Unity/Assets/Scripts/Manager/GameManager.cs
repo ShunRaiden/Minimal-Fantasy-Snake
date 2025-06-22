@@ -53,16 +53,20 @@ namespace Manager
         [Header("Spawn")]
         public List<HeroManager> heroPerfab = new List<HeroManager>();
         public List<CharacterManager> characterPrefab = new List<CharacterManager>();
-        public int startSpawnCount = 2;
+        public List<BuffItem> buffITemPrefab = new List<BuffItem>();
+        public int startCharacterSpawnCount = 2;
+        public int startItemSpawnCount = 2;
+        [Range(0, 100)] public float spawnRate;
 
         [Header("Combat Data")]
-        public int turnPerCombatLitmit = 20;
+        public int turnPerCombatLitmit = 10;
 
         [Header("Debug")]
         public CharacterManager currentMonster;
         public CharacterManager currentHero;
         public Tile tileHeroToMoveInto;
         public Dictionary<Tile, CharacterManager> currentCharacterOnGrid = new Dictionary<Tile, CharacterManager>();
+        public Dictionary<Tile, BuffItem> currentBuffItemOnGrid = new Dictionary<Tile, BuffItem>();
 
         #region State SetUp
         public void SetUpMainMenu()
@@ -80,6 +84,7 @@ namespace Manager
             }
 
             ClearCharacter();
+            ClearBuff();
 
             if (GameState != null)
             {
@@ -119,12 +124,66 @@ namespace Manager
             playerManager.ResetPlayer();
             gameplayUIManager.ClearGameplaySlot();
         }
+
+        private void ClearBuff()
+        {
+            if (currentBuffItemOnGrid.Count > 0)
+            {
+                foreach (var hero in currentBuffItemOnGrid.Values)
+                {
+                    Destroy(hero.gameObject);
+                }
+
+                currentBuffItemOnGrid.Clear();
+            }
+        }
         #endregion
 
         #region Character
         public void SpawnCharacter()
         {
-            // All Avaiable Pos
+            List<Vector2> availablePositions = AvailablePositions();
+
+            if (availablePositions.Count == 0)
+            {
+                SetState(GameState.gameOverState);
+                return;
+            }
+
+            Vector2 spawnGridPos = availablePositions[UnityEngine.Random.Range(0, availablePositions.Count)];
+
+            Tile tile = gridManager.gridTiles[spawnGridPos];
+
+            CharacterManager newChar = Instantiate(characterPrefab[UnityEngine.Random.Range(0, characterPrefab.Count)],
+                                                   tile.transform.position, Quaternion.identity);
+
+            newChar.RandomSetUp();
+
+            currentCharacterOnGrid.Add(tile, newChar);
+        }
+
+        public void RandomSpawnBuffItem()
+        {
+            List<Vector2> availablePositions = AvailablePositions();
+
+            if (availablePositions.Count == 0)
+            {
+                SetState(GameState.gameOverState);
+                return;
+            }
+
+            Vector2 spawnGridPos = availablePositions[UnityEngine.Random.Range(0, availablePositions.Count)];
+
+            Tile tile = gridManager.gridTiles[spawnGridPos];
+
+            BuffItem newItem = Instantiate(buffITemPrefab[UnityEngine.Random.Range(0, buffITemPrefab.Count)],
+                                           tile.transform.position, Quaternion.identity);
+
+            currentBuffItemOnGrid.Add(tile, newItem);
+        }
+
+        private List<Vector2> AvailablePositions()
+        {
             List<Vector2> availablePositions = new List<Vector2>();
 
             for (int x = 0; x < gridManager.Width; x++)
@@ -140,26 +199,10 @@ namespace Manager
                 }
             }
 
-            if (availablePositions.Count == 0)
-            {
-                SetState(GameState.gameOverState);
-                return;
-            }
-
-            // Random Tile
-            Vector2 spawnGridPos = availablePositions[UnityEngine.Random.Range(0, availablePositions.Count)];
-
-            Tile tile = gridManager.gridTiles[spawnGridPos];
-
-            CharacterManager newChar = Instantiate(characterPrefab[UnityEngine.Random.Range(0, characterPrefab.Count)],
-                                                   tile.transform.position, Quaternion.identity);
-
-            newChar.RandomSetUp();
-
-            currentCharacterOnGrid.Add(tile, newChar);
+            return availablePositions;
         }
 
-        public Dictionary<Vector2, CharacterManager> GetAllCharacterPositions()
+        private Dictionary<Vector2, CharacterManager> GetAllCharacterPositions()
         {
             var allCharacterPos = new Dictionary<Vector2, CharacterManager>();
 
@@ -176,9 +219,22 @@ namespace Manager
             return allCharacterPos;
         }
 
+        private Dictionary<Vector2, BuffItem> GetAllBuffPostion()
+        {
+            var allItemPos = new Dictionary<Vector2, BuffItem>();
+
+            foreach (var item in currentBuffItemOnGrid)
+            {
+                allItemPos[item.Key.gridPosition] = item.Value;
+            }
+
+            return allItemPos;
+        }
+
         public bool CanSpawn(Vector2 targetGridPos)
         {
-            return !GetAllCharacterPositions().ContainsKey(targetGridPos);
+            return !GetAllCharacterPositions().ContainsKey(targetGridPos)
+                && !GetAllBuffPostion().ContainsKey(targetGridPos);
         }
 
         public CharacterManager CheckHasCharacter()
@@ -191,6 +247,23 @@ namespace Manager
             {
                 return null;
             }
+        }
+
+        public BuffItem CheckHasBuffItem()
+        {
+            if (currentBuffItemOnGrid.ContainsKey(playerManager.currentPostion))
+            {
+                return currentBuffItemOnGrid[playerManager.currentPostion];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public bool RandomHasSpawnItem()
+        {
+            return UnityEngine.Random.Range(0, 100) < spawnRate;
         }
 
         public CharacterType CheckTypeCharacter()
@@ -281,10 +354,17 @@ namespace Manager
             gameplayUIManager.SetUpPlayerGameplayUI(playerManager.TryGetFirstHero().statusCharacter);
             gameplayUIManager.UpdatePlayerCount();
 
-            for (int i = 0; i < startSpawnCount; i++)
+            for (int i = 0; i < startCharacterSpawnCount; i++)
             {
                 SpawnCharacter();
             }
+
+            for (int i = 0; i < startItemSpawnCount; i++)
+            {
+                RandomSpawnBuffItem();
+            }
+
+            currentHero = playerManager.TryGetFirstHero();
 
             return true;
         }
@@ -311,6 +391,11 @@ namespace Manager
                 yield return playerManager.MoveAllHeroNormal();
                 gameplayUIManager.RemoveMonsterProfile();
                 SpawnCharacter();
+
+                if (RandomHasSpawnItem())
+                {
+                    RandomSpawnBuffItem();
+                }
                 SetState(GameState.inputState);
             }
         }
@@ -334,7 +419,13 @@ namespace Manager
             }
         }
 
-        public IEnumerator DrawCondition()
+        public bool CheckDrawCondition(CharacterBaseStatus hero, CharacterBaseStatus monster)
+        {
+            return hero.currentDEF >= monster.currentATK
+                && monster.currentDEF >= hero.currentATK;
+        }
+
+        public IEnumerator StartDrawCondition()
         {
             currentHero.TakeDamage(999, CharacterClass.God);
             gameplayUIManager.UpdateMonsterSlot(currentMonster.statusCharacter);
