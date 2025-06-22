@@ -998,7 +998,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 1
@@ -1027,7 +1027,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.53729963, y: 0, z: 0, w: 0.8433915}
-  m_LocalPosition: {x: 4.5, y: 3.5, z: 5.85}
+  m_LocalPosition: {x: 4.5, y: 10, z: 2.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4724,7 +4724,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 1
@@ -5113,9 +5113,9 @@ MonoBehaviour:
   rockPrefab: {fileID: 5809663218865875632, guid: be4f282a5f8c2d548a7ed31ce50aeeb2, type: 3}
   inputManager: {fileID: 1773738907}
   combatCameraManager: {fileID: 136142297}
-  startPos: {x: 5, y: 5}
+  startPos: {x: 8, y: 8}
   playerTile: {fileID: 4831248306439971029}
-  collectHeroSoundKey: CollectHero
+  collectSoundKey: CollectHero
   moveSoundKey: Move
   currentPostion: {fileID: 0}
   lastTileOfPlayer: {fileID: 0}
@@ -6361,7 +6361,7 @@ Transform:
   m_GameObject: {fileID: 914350427652027578}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.01, z: 0}
   m_LocalScale: {x: 0.1, y: 1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6472,7 +6472,7 @@ Transform:
   m_GameObject: {fileID: 4831248306439971029}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.01, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

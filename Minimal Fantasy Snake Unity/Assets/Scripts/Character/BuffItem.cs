@@ -1,3 +1,4 @@
+using Manager;
 using UnityEngine;
 
 namespace Character
@@ -21,6 +22,7 @@ namespace Character
         public void GetBuff(CharacterManager character)
         {
             character.GetDataSetUp(GetStatusData(character.statusCharacter));
+            AudioManager.instance.PlayOneShotSFX(GameManager.instance.playerManager.collectSoundKey);
             Destroy(gameObject);
         }
 

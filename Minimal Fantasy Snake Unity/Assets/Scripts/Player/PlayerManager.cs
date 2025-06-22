@@ -21,7 +21,7 @@ namespace Player
 
         public GameObject playerTile;
 
-        public string collectHeroSoundKey = "CollectHero";
+        public string collectSoundKey = "CollectHero";
         public string moveSoundKey = "Move";
 
         [Header("Debug")]
@@ -141,7 +141,7 @@ namespace Player
             currentPlayerHero.Add(character, lastTileOfPlayer);
             character.GetDataSetUp(data.statusCharacter.GetDataSetup());
 
-            AudioManager.instance.PlayOneShotSFX(collectHeroSoundKey);
+            AudioManager.instance.PlayOneShotSFX(collectSoundKey);
         }
 
         private HeroManager GetHeroPrefab(CharacterClass classed)
