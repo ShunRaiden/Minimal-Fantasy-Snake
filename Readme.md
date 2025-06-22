@@ -14,6 +14,11 @@
     1. If you move onto a tile with a **Hero**, you will gain that **Hero**.
     2. If you move onto a tile with a **Monster**, a battle will begin.
     3. If you move onto a tile with **your own Hero**, you will **immediately lose**.
+    4. If you move onto a tile with a **Item**, your first hero get **Buff Status**.
+        - Item Type
+            - Green Item : increase Hp
+            - Red Item : increase ATK
+            - Gray Item : increase DEF
 3. The game ends when:
     1. You collide with your own Hero.
     2. All of your Heroes are defeated.
